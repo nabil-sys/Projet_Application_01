@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -31,23 +33,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        showList();
         makeApiCall();
     }
 
-    private void showList(){
+    private void showList(List<ExerciceImage> exerciceImageList) {
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         // use a linear layout manager
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        List<String> input = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            input.add("Test" + i);
-        }
+
         // define an adapter
-        mAdapter = new ListAdapter(input);
+        mAdapter = new ListAdapter(exerciceImageList);
         recyclerView.setAdapter(mAdapter);
     }
 
@@ -69,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<RestExerciceImageResponse> call, Response<RestExerciceImageResponse> response) {
                 if(response.isSuccessful() && response.body() != null){
                     List<ExerciceImage> exerciceImageList = response.body().getResults();
-                    Toast.makeText(getApplicationContext(), "API Succes", Toast.LENGTH_SHORT).show();
+                    showList(exerciceImageList);
                 }
                 else {
                     showError();
@@ -82,10 +80,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
-
     }
+
 
     private void showError() {
         Toast.makeText(getApplicationContext(), "API Error", Toast.LENGTH_SHORT).show();

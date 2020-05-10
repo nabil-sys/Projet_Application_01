@@ -11,7 +11,9 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ListAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
+    private SharedPreferences sharedPreferences;
+    private Gson gson;
 
     private static final String BASE_URL = "https://wger.de";
 
@@ -33,8 +37,33 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        makeApiCall();
+        sharedPreferences = getSharedPreferences("application_mobile", Context.MODE_PRIVATE);
+        gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        List<ExerciceImage> exerciceImageList = getDataFromCache();
+
+        if(exerciceImageList != null){
+            showList(exerciceImageList);
+        }else{
+            makeApiCall();
+        }
     }
+
+
+    private List<ExerciceImage> getDataFromCache() {
+
+        String jsonExerciceImage =sharedPreferences.getString(Constants.KEY_EXERCICEIMAGE_LIST, null);
+
+        if(jsonExerciceImage == null){
+            return null;
+        }else {
+            Type listType = new TypeToken<List<ExerciceImage>>(){}.getType();
+            return gson.fromJson(jsonExerciceImage, listType);
+        }
+    }
+
 
     private void showList(List<ExerciceImage> exerciceImageList) {
 
@@ -50,10 +79,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void makeApiCall(){
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
@@ -67,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<RestExerciceImageResponse> call, Response<RestExerciceImageResponse> response) {
                 if(response.isSuccessful() && response.body() != null){
                     List<ExerciceImage> exerciceImageList = response.body().getResults();
+                    saveList(exerciceImageList);
                     showList(exerciceImageList);
                 }
                 else {
@@ -82,6 +108,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void saveList(List<ExerciceImage> exerciceImageList) {
+        String jsonString = gson.toJson(exerciceImageList);
+
+        sharedPreferences
+                .edit()
+                .putString(Constants.KEY_EXERCICEIMAGE_LIST, jsonString)
+                .apply();
+
+        Toast.makeText(getApplicationContext(), "List saved", Toast.LENGTH_SHORT).show();
+
+    }
 
     private void showError() {
         Toast.makeText(getApplicationContext(), "API Error", Toast.LENGTH_SHORT).show();

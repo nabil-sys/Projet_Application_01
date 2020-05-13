@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.example.projetapplication01.Constants;
 import com.example.projetapplication01.R;
 import com.example.projetapplication01.data.ExoApi;
+import com.example.projetapplication01.presentation.controller.MainController;
 import com.example.projetapplication01.presentation.model.ExerciceImage;
 import com.example.projetapplication01.presentation.model.RestExerciceImageResponse;
 import com.google.gson.Gson;
@@ -31,45 +32,26 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ListAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    private SharedPreferences sharedPreferences;
-    private Gson gson;
 
-    private static final String BASE_URL = "https://wger.de";
+    private MainController controller;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sharedPreferences = getSharedPreferences("application_mobile", Context.MODE_PRIVATE);
-        gson = new GsonBuilder()
-                .setLenient()
-                .create();
-
-        List<ExerciceImage> exerciceImageList = getDataFromCache();
-
-        if(exerciceImageList != null){
-            showList(exerciceImageList);
-        }else{
-            makeApiCall();
-        }
+        controller = new MainController(
+                this,
+                new GsonBuilder()
+                        .setLenient()
+                        .create(),
+                getSharedPreferences("application_mobile", Context.MODE_PRIVATE)
+        );
+        controller.onStart();
     }
 
-
-    private List<ExerciceImage> getDataFromCache() {
-
-        String jsonExerciceImage =sharedPreferences.getString(Constants.KEY_EXERCICEIMAGE_LIST, null);
-
-        if(jsonExerciceImage == null){
-            return null;
-        }else {
-            Type listType = new TypeToken<List<ExerciceImage>>(){}.getType();
-            return gson.fromJson(jsonExerciceImage, listType);
-        }
-    }
-
-
-    private void showList(List<ExerciceImage> exerciceImageList) {
+    public void showList(List<ExerciceImage> exerciceImageList) {
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -82,49 +64,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
     }
 
-    private void makeApiCall(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        ExoApi exoApi = retrofit.create(ExoApi.class);
-
-        Call<RestExerciceImageResponse> call = exoApi.getExerciceImageResponse();
-        call.enqueue(new Callback<RestExerciceImageResponse>() {
-            @Override
-            public void onResponse(Call<RestExerciceImageResponse> call, Response<RestExerciceImageResponse> response) {
-                if(response.isSuccessful() && response.body() != null){
-                    List<ExerciceImage> exerciceImageList = response.body().getResults();
-                    saveList(exerciceImageList);
-                    showList(exerciceImageList);
-                }
-                else {
-                    showError();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RestExerciceImageResponse> call, Throwable t) {
-                showError();
-
-            }
-        });
-    }
-
-    private void saveList(List<ExerciceImage> exerciceImageList) {
-        String jsonString = gson.toJson(exerciceImageList);
-
-        sharedPreferences
-                .edit()
-                .putString(Constants.KEY_EXERCICEIMAGE_LIST, jsonString)
-                .apply();
-
-        Toast.makeText(getApplicationContext(), "List saved", Toast.LENGTH_SHORT).show();
-
-    }
-
-    private void showError() {
+    public void showError() {
         Toast.makeText(getApplicationContext(), "API Error", Toast.LENGTH_SHORT).show();
     }
 }

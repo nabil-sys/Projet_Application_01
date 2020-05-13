@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -58,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void navigateToDetails(ExerciceImage exerciceImage) {
-        Toast.makeText(getApplicationContext(), "TODO NAVIGATE", Toast.LENGTH_SHORT).show();
+        Intent myIntent = new Intent(MainActivity.this, DetailActivity.class);
+ //       myIntent.putExtra("key", value); //Optional parameters
+        MainActivity.this.startActivity(myIntent);
+
     }
 }

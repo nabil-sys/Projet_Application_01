@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Projet Application 01</string>
+    <string name="datail_text_description">Ecran Detail</string>
 </resources>

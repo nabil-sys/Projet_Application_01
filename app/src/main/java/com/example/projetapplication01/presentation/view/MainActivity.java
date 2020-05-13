@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void navigateToDetails(ExerciceImage exerciceImage) {
         Intent myIntent = new Intent(MainActivity.this, DetailActivity.class);
- //       myIntent.putExtra("key", value); //Optional parameters
+        myIntent.putExtra("exerciceImageKey", Singletons.getGson().toJson(exerciceImage));
         MainActivity.this.startActivity(myIntent);
 
     }

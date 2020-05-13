@@ -1,4 +1,4 @@
-package com.example.projetapplication01;
+package com.example.projetapplication01.presentation.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,12 +9,16 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.example.projetapplication01.Constants;
+import com.example.projetapplication01.R;
+import com.example.projetapplication01.data.ExoApi;
+import com.example.projetapplication01.presentation.model.ExerciceImage;
+import com.example.projetapplication01.presentation.model.RestExerciceImageResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;

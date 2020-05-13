@@ -85,6 +85,7 @@ public class MainController {
     }
 
     public void onItemClick(ExerciceImage exerciceImage){
+        view.navigateToDetails(exerciceImage);
 
     }
 

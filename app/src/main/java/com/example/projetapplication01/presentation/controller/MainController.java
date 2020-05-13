@@ -1,16 +1,13 @@
 package com.example.projetapplication01.presentation.controller;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.widget.Toast;
 
 import com.example.projetapplication01.Constants;
-import com.example.projetapplication01.data.ExoApi;
+import com.example.projetapplication01.Singletons;
 import com.example.projetapplication01.presentation.model.ExerciceImage;
 import com.example.projetapplication01.presentation.model.RestExerciceImageResponse;
 import com.example.projetapplication01.presentation.view.MainActivity;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
@@ -19,8 +16,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainController {
 
@@ -46,14 +41,7 @@ public class MainController {
 
 
     private void makeApiCall(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        ExoApi exoApi = retrofit.create(ExoApi.class);
-
-        Call<RestExerciceImageResponse> call = exoApi.getExerciceImageResponse();
+        Call<RestExerciceImageResponse> call = Singletons.getExoApi().getExerciceImageResponse();
         call.enqueue(new Callback<RestExerciceImageResponse>() {
             @Override
             public void onResponse(Call<RestExerciceImageResponse> call, Response<RestExerciceImageResponse> response) {

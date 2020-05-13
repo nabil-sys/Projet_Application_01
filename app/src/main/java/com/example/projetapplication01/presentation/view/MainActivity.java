@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.projetapplication01.Constants;
 import com.example.projetapplication01.R;
+import com.example.projetapplication01.Singletons;
 import com.example.projetapplication01.data.ExoApi;
 import com.example.projetapplication01.presentation.controller.MainController;
 import com.example.projetapplication01.presentation.model.ExerciceImage;
@@ -43,10 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
         controller = new MainController(
                 this,
-                new GsonBuilder()
-                        .setLenient()
-                        .create(),
-                getSharedPreferences("application_mobile", Context.MODE_PRIVATE)
+                Singletons.getGson(),
+                Singletons.getSharedPreferences(getApplicationContext())
         );
         controller.onStart();
     }

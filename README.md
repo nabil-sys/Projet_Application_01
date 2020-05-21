@@ -9,7 +9,7 @@ Note : dans ce projet j'ai d'abord utiliser l'API d'un pokedex (PokeApi) afin de
 ## Prérequis :
 - Installation d'Android Studio
 - Utilisation d'une API :
-https://wger.de/api/v2/exerciseimage/
+"https://wger.de/api/v2/exerciseimage/"
 
 ## Consigne respectées :
 - Appel WebService à une API REST
@@ -22,4 +22,7 @@ https://wger.de/api/v2/exerciseimage/
 - Utilisation de Gitflow (notamment lors du changement d'API)
 
 ## Fonctionnalités :
-### Premier écran (liste)
+### Premier écran
+- Liste de RecyclerView.
+
+
